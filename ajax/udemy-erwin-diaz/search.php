@@ -6,24 +6,31 @@
  * Time: 13:07
  */
 
-$connect = mysqli_connect('localhost', 'superroot', 'superroot', 'udemy-erwin-diaz');
-
 $search = $_POST['search'];
 
 if (!empty($search)) {
-    $query = "SELECT * FROM cars WHERE car LIKE '$search%'";
-    $searchQuery = mysqli_query($connect, $query);
+    $dsn = 'mysql:host=localhost;dbname=udemy-erwin-diaz';
+    $username = 'superroot';
+    $password = 'superroot';
+    $options = array(
+        PDO::ATTR_PERSISTENT => true,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    );
 
-    if (!$searchQuery) {
-        die('QUERY FAILED' . mysqli_error($connect));
+    try {
+        $dbh = new PDO($dsn, $username, $password, $options);
+    } catch (Exception $e) {
+        echo $e->getMessage();
     }
 
-    while ($row = mysqli_fetch_array($searchQuery)) {
-        $brand = $row['car'];
- ?>
-        <ul class="list-unstyled">
-            <?php echo "<li>{$brand} in stock</li>"; ?>
-        </ul>
-<?php
+    $stmt = $dbh->prepare('SELECT car FROM cars WHERE car LIKE :search');
+    $stmt->bindValue(':search', $search . '%', PDO::PARAM_STR);
+    $stmt->execute();
+    $cars = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    echo '<ul>';
+    foreach ($cars as $car) {
+        echo '<li>' . $car->car . ' in stock</li>';
     }
+    echo '</ul>';
 }
