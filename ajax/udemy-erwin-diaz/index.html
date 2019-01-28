@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Udemy Erwin Diaz</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <script>
+        $(document).ready(function() {
+            $('#search').on('keyup', function() {
+                var $search = $(this),
+                    $results = $('#results'),
+                    searchValue = $search.val();
+
+                $.ajax({
+                    url: 'search.php',
+                    data: { search: searchValue },
+                    type: 'POST',
+                    success: function(data) {
+                        if (!data.error) {
+                           $results.html(data);
+                        }
+                    }
+                });
+            })
+        });
+    </script>
+
+    <div id="container" class="container">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <h2>Search Database</h2>
+                <input type="text" class="form-control mb-5" name="search" id="search" placeholder="Search our inventory">
+
+                <h2 id="results" class="bg-success"></h2>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
